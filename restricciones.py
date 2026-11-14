@@ -26,3 +26,13 @@ def es_consistente(id_clase, id_franja, id_salon, dic_clases, asignaciones):
         if otra_franja == id_franja and otra_clase.grupo == clase_nueva.grupo:
             return False
     return True
+
+def es_meta(asignaciones, dic_clases):
+    """Indica si todas las clases han sido asignadas.
+
+    Recibe:
+        asignaciones: Un diccionario {id_clase: (id_franja, id_salon)} con las asignaciones actuales.
+        dic_clases: Un diccionario {id_clase: Clase} con las clases cargadas desde el archivo.
+    Devuelve True si todas las clases han sido asignadas y False si no.
+    """
+    len(asignaciones) == len(dic_clases)
