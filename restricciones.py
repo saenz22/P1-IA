@@ -10,29 +10,32 @@ def es_consistente(id_clase, id_franja, id_salon, dic_clases, asignaciones):
     Devuelve True si no hay conflicto y False si lo hay.
     """
     for id_otra_clase, (otra_franja, otro_salon) in asignaciones.items():
-        clase_nueva = dic_clases[id_clase]
-        otra_clase = dic_clases[id_otra_clase]
-
+        if otra_franja != id_franja:
+            continue
 
         if id_otra_clase == id_clase:
             continue
+
+        clase_nueva = dic_clases[id_clase]
+        otra_clase = dic_clases[id_otra_clase]
+
         # Salón: misma franja y mismo salón.
-        if otra_franja == id_franja and otro_salon == id_salon:
+        if otro_salon == id_salon:
             return False
         # Profesor: misma franja y mismo profesor.
-        if otra_franja == id_franja and otra_clase.profesorId == clase_nueva.profesorId:
+        if otra_clase.profesorId == clase_nueva.profesorId:
             return False
         # Grupo: misma franja y mismo grupo.
-        if otra_franja == id_franja and otra_clase.grupo == clase_nueva.grupo:
+        if otra_clase.grupo == clase_nueva.grupo:
             return False
     return True
 
-def es_meta(asignaciones, dic_clases):
+def es_meta(dic_clases, asignaciones):
     """Indica si todas las clases han sido asignadas.
 
     Recibe:
-        asignaciones: Un diccionario {id_clase: (id_franja, id_salon)} con las asignaciones actuales.
         dic_clases: Un diccionario {id_clase: Clase} con las clases cargadas desde el archivo.
+        asignaciones: Un diccionario {id_clase: (id_franja, id_salon)} con las asignaciones actuales.
     Devuelve True si todas las clases han sido asignadas y False si no.
     """
-    len(asignaciones) == len(dic_clases)
+    return len(asignaciones) == len(dic_clases)
