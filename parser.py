@@ -5,7 +5,7 @@ def cargarProfes(r):
     """Carga los datos de los profesores desde un archivo txt.
     
     Recibe la ruta del archivo y devuelve una lista de objetos Profesor.
-    Lanza un ValueError si se esperan 2 datos y se encuentran más o menos.
+    Lanza un ValueError si se esperan 3 datos y se encuentran más o menos.
     """
     profes = []
 
@@ -18,13 +18,26 @@ def cargarProfes(r):
 
             datos = [d.strip() for d in line.split(";")]
 
-            if len(datos) != 2:
-                raise ValueError(f"Error en la línea {num}: se esperaban 2 datos, pero se encontraron {len(datos)}.")
+            if len(datos) != 3:
+                raise ValueError(f"Error en la línea {num}: se esperaban 3 datos, pero se encontraron {len(datos)}.")
             
-            id_profe, nombre = datos
+            id_profe, nombre, franjas_no_disponibles = datos
 
-            profes.append(Profesor(id_profe, nombre))
+            franjas = set()
+            for pedazo in franjas_no_disponibles.split(","):
+                pedazo = pedazo.strip()
+                if pedazo:
+                    franjas.add(pedazo)
+
+            profes.append(Profesor(id_profe, nombre, franjas))
     return profes
+
+def construir_no_disponibles(profes):
+    """Construye {id_profesor: conjunto de id_franja} a partir de la lista de profesores."""
+    no_disponibles = {}
+    for profe in profes:
+        no_disponibles[profe.id] = profe.franjas_no_disponibles
+    return no_disponibles
 
 def cargarSalones(r):
     """Carga los datos de los salones desde un archivo txt.

@@ -1,7 +1,8 @@
 class Profesor:
-    def __init__(self, id, nombre):
+    def __init__(self, id, nombre, franjas_no_disponibles):
         self.id = id
         self.nombre = nombre
+        self.franjas_no_disponibles = franjas_no_disponibles
 
 class Salon:
     def __init__(self, id):
