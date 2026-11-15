@@ -24,6 +24,9 @@ def busqueda_por_amplitud(asignaciones_iniciales, orden_clases, franjas, salones
     o si no se encontró una solución (No se encontró una solución.).
 
     """
+    if no_disponibles is None:
+            no_disponibles = {}
+
     nodos_explorados = 0
     cola = deque([asignaciones_iniciales])
     while cola:
@@ -97,7 +100,7 @@ def busqueda_a_asterisco(asignaciones_iniciales, orden_clases, franjas, salones,
     franjas: Lista de objetos Franja que representan las franjas horarias disponibles.
     salones: Lista de objetos Salon que representan los salones disponibles.
     dic_clases: Diccionario con las clases cargadas desde el archivo.
-    heuristica: Función heuristica(estado, orden_clases, dic_clases) que estima el costo que falta hasta la meta.
+    heuristica: Función heuristica(asignaciones_iniciales, orden_clases, franjas, dic_clases, no_disponibles) que estima el costo que falta hasta la meta.
     no_disponibles: Diccionario con las franjas no disponibles para cada profesor (opcional).
     limite_nodos_explorados: Límite de nodos a explorar durante la búsqueda (por defecto 100000).
 
@@ -111,7 +114,7 @@ def busqueda_a_asterisco(asignaciones_iniciales, orden_clases, franjas, salones,
         no_disponibles = {}
     nodos_explorados = 0
     contador = 0
-    f_inicial = heuristica(asignaciones_iniciales, orden_clases, dic_clases)  # g = 0
+    f_inicial = heuristica(asignaciones_iniciales, orden_clases, franjas, dic_clases, no_disponibles)  # g = 0
     cola = [(f_inicial, contador, 0, asignaciones_iniciales)]
 
     while cola:
@@ -128,7 +131,7 @@ def busqueda_a_asterisco(asignaciones_iniciales, orden_clases, franjas, salones,
         for sucesor, costo in sucesores:
             contador += 1
             g_sucesor = g_actual + costo                                # g(n): costo acumulado
-            h_sucesor = heuristica(sucesor, orden_clases, dic_clases)   # h(n): estimación de lo que falta
+            h_sucesor = heuristica(sucesor, orden_clases, franjas, dic_clases, no_disponibles)   # h(n): estimación de lo que falta
             f_sucesor = g_sucesor + h_sucesor                           # f(n) = g(n) + h(n)
             heapq.heappush(cola, (f_sucesor, contador, g_sucesor, sucesor))
 

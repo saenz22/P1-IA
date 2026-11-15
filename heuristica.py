@@ -17,7 +17,7 @@ def heuristica(asignaciones, orden_clases, franjas, dic_clases, no_disponibles):
     total = 0
 
     for id_clase in pendientes:
-        minimo = min(costo_asignacion(dic_clases[id_clase], franja, dic_clases, no_disponibles) for franja in franjas)
+        minimo = min(costo_asignacion(id_clase, franja.id, dic_clases, no_disponibles) for franja in franjas)
         total += minimo
 
     return total

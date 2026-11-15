@@ -19,13 +19,13 @@ def es_consistente(id_clase, id_franja, id_salon, dic_clases, asignaciones):
         clase_nueva = dic_clases[id_clase]
         otra_clase = dic_clases[id_otra_clase]
 
-        # Salón: misma franja y mismo salón.
+        # Salón: mismo salón.
         if otro_salon == id_salon:
             return False
-        # Profesor: misma franja y mismo profesor.
+        # Profesor: mismo profesor.
         if otra_clase.profesorId == clase_nueva.profesorId:
             return False
-        # Grupo: misma franja y mismo grupo.
+        # Grupo: mismo grupo.
         if otra_clase.grupo == clase_nueva.grupo:
             return False
     return True
