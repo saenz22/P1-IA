@@ -1,0 +1,4 @@
+P1;Ana Gomez;F1,F2,F3
+P2;Luis Perez;F5,F6
+P3;Marta Ruiz;F1
+P4;Carlos Diaz;
