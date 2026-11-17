@@ -6,14 +6,28 @@ h_cero = lambda estado, orden, dic, clases, no_dispo: 0
 h_restantes = lambda estado, orden, dic, clases, no_dispo: len(orden) - len(estado)
 
 def costo_total(solucion, dic_clases, no_disp):
-    """Calcula el costo total de una solución, sumando los costos de asignación de cada clase."""
+    """Calcula el costo total de una solución, sumando los costos de asignación de cada clase.
+    Recibe:
+        solucion: {id_clase: (id_franja, id_salon)}
+        dic_clases: {id_clase: Clase}
+        no_disp: {id_profesor: {id_franja}}
+    Devuelve el costo total como un número entero. Si la solución es None, devuelve None.
+    """
     if solucion is None:
         return None
     return sum(costo_asignacion(c, f, dic_clases, no_disp) for c, (f, _) in solucion.items())
 
 def probar(titulo, franjas, salones, clases, no_disp=None, limite=100000):
     """Prueba los algoritmos de búsqueda con un conjunto de franjas, salones y clases,
-      mostrando los resultados."""
+      mostrando los resultados.
+      Recibe:
+        titulo: título de la prueba.
+        franjas: lista de objetos Franja.
+        salones: lista de objetos Salon.
+        clases: lista de objetos Clase.
+        no_disp: {id_profesor: {id_franja}} (opcional).
+        limite: límite de nodos explorados (opcional).
+        Devuelve None. No retorna un valor específico, sino que imprime los resultados de las búsquedas."""
     dic = {c.id: c for c in clases}
     orden = [c.id for c in clases]
     nd = no_disp or {}
