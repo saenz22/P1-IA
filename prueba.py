@@ -1,9 +1,9 @@
 from clases import Franja, Salon, Clase
 from costos import costo_asignacion
-from algoritmos import busqueda_costo_uniforme, busqueda_a_asterisco
+from algoritmos import busqueda_costo_uniforme, busqueda_a_asterisco, busqueda_profundizacion_iterativa
 
-h_cero = lambda estado, orden, dic: 0
-h_restantes = lambda estado, orden, dic: len(orden) - len(estado)
+h_cero = lambda estado, orden, dic, clases, no_dispo: 0
+h_restantes = lambda estado, orden, dic, clases, no_dispo: len(orden) - len(estado)
 
 def costo_total(solucion, dic_clases, no_disp):
     if solucion is None:
@@ -17,6 +17,7 @@ def probar(titulo, franjas, salones, clases, no_disp=None, limite=100000):
     print("==", titulo)
     for nombre, res in [
         ("UCS     ", busqueda_costo_uniforme({}, orden, franjas, salones, dic, nd, limite)),
+        ("IDDFS   ", busqueda_profundizacion_iterativa({}, orden, franjas, salones, dic, nd, limite)),
         ("A* h=0  ", busqueda_a_asterisco({}, orden, franjas, salones, dic, h_cero, nd, limite)),
         ("A* h=res", busqueda_a_asterisco({}, orden, franjas, salones, dic, h_restantes, nd, limite)),
     ]:

@@ -136,3 +136,139 @@ def busqueda_a_asterisco(asignaciones_iniciales, orden_clases, franjas, salones,
             heapq.heappush(cola, (f_sucesor, contador, g_sucesor, sucesor))
 
     return None, nodos_explorados, "No se encontró una solución."
+
+# Búsqueda por profundización iterativa con límites de profundidad crecientes.
+
+def _buscar_con_limite(estado, limite, orden_clases, franjas, salones, dic_clases, no_disponibles, contador, limite_nodos):
+    """
+    FUNCIÓN AUXILIAR RECURSIVA.
+
+    Realiza una búsqueda en profundidad limitada desde el estado actual.
+
+    Parámetros:
+        estado: estado actual de las asignaciones.
+        limite: profundidad máxima permitida.
+        orden_clases: orden en que se asignan las clases.
+        franjas: franjas horarias disponibles.
+        salones: salones disponibles.
+        dic_clases: diccionario con la información de las clases.
+        no_disponibles: restricciones de disponibilidad.
+        contador: lista que almacena los nodos explorados.
+        limite_nodos: máximo de nodos que pueden explorarse.
+
+    Retorna:
+        dict: una solución encontrada.
+        None: si no encuentra solución dentro del límite.
+        "LIMITE_NODOS": si alcanza el máximo de nodos explorados.
+    """
+
+    # 1. Contar el nodo actual
+    contador[0] += 1
+
+    # 2. Comprobar si el estado es una solución
+    if es_meta(dic_clases, estado):
+        return estado
+
+    # 3. Comprobar el límite de nodos
+    if contador[0] >= limite_nodos:
+        return "LIMITE_NODOS"
+
+    # 4. No expandir si alcanzamos el límite de profundidad
+    if len(estado) == limite:
+        return None
+
+    # 5. Generar sucesores
+    sucesores = generar_sucesores(estado, orden_clases, franjas, salones, dic_clases, no_disponibles)
+
+    for sucesor, _ in sucesores:
+
+        resultado = _buscar_con_limite(sucesor, limite, orden_clases, franjas, salones, dic_clases, no_disponibles, contador, limite_nodos)
+
+        # Si encontramos una solución, la propagamos
+        if resultado is not None and resultado != "LIMITE_NODOS":
+            return resultado
+
+        # Si alcanzamos el límite de nodos, detenemos toda la búsqueda
+        if resultado == "LIMITE_NODOS":
+            return "LIMITE_NODOS"
+
+    # 6. Ningún sucesor produjo una solución
+    return None
+
+
+def busqueda_profundizacion_iterativa(
+    asignaciones_iniciales,
+    orden_clases,
+    franjas,
+    salones,
+    dic_clases,
+    no_disponibles=None,
+    limite_nodos_explorados=100000
+):
+    """
+    Realiza una búsqueda por profundización iterativa (IDDFS).
+
+    Repite una búsqueda en profundidad limitada, aumentando
+    progresivamente el límite de profundidad desde 0 hasta
+    la cantidad total de clases.
+
+    Parámetros:
+        asignaciones_iniciales: estado inicial de las asignaciones.
+        orden_clases: orden en que se asignan las clases.
+        franjas: franjas horarias disponibles.
+        salones: salones disponibles.
+        dic_clases: diccionario con la información de las clases.
+        no_disponibles: restricciones de disponibilidad.
+        limite_nodos_explorados: máximo de nodos que se pueden explorar.
+
+    Retorna:
+        (solucion, nodos, mensaje):
+            solucion: estado encontrado o None.
+            nodos: cantidad total de nodos explorados.
+            mensaje: resultado de la búsqueda.
+    """
+
+    # 1. Inicializar las restricciones
+    if no_disponibles is None:
+        no_disponibles = {}
+
+    # 2. Inicializar el contador una sola vez
+    contador = [0]
+
+    # 3. Aumentar progresivamente el límite de profundidad
+    for limite in range(len(dic_clases) + 1):
+
+        resultado = _buscar_con_limite(
+            asignaciones_iniciales,
+            limite,
+            orden_clases,
+            franjas,
+            salones,
+            dic_clases,
+            no_disponibles,
+            contador,
+            limite_nodos_explorados
+        )
+
+        # Solución encontrada
+        if resultado is not None and resultado != "LIMITE_NODOS":
+            return (
+                resultado,
+                contador[0],
+                "Se encontró una solución."
+            )
+
+        # Se alcanzó el límite de nodos
+        if resultado == "LIMITE_NODOS":
+            return (
+                None,
+                contador[0],
+                "Se alcanzó el límite de nodos explorados."
+            )
+
+    # 4. No se encontró ninguna solución
+    return (
+        None,
+        contador[0],
+        "No se encontró una solución."
+    )
